@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "icon-python-tutorials"
+version = "0.1.0"
+description = "Example projects for the \"ICON With Python\" tutorial series on icon.community."
+authors = ["RHIZOME Labs <53635700+rhizome-labs@users.noreply.github.com>"]
+readme = "README.md"
+packages = [{include = "icon_python_tutorials"}]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+iconsdk = "^2.2.0"
+rich = "^12.6.0"
+python-dotenv = "^0.21.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
