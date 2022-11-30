@@ -105,7 +105,7 @@ def query_balanced_pool_data():
         try:
             # Query Balanced DEX contract's "getPoolStats" method with the provided pool ID.
             result = call(
-                "cxa0af3165c08318e988cb30993b3048335b94af6c",
+                "cxa0af3165c08318e988cb30993b3048335b94af6c",  # cxa0af3165c08318e988cb30993b3048335b94af6c is the Balanced DEX contract address.
                 "getPoolStats",
                 {"_id": pool_id},
             )
@@ -194,14 +194,37 @@ def query_balanced_pool_data():
     return pools
 
 
+def query_icx_usd_quote(height: int = None):
+    """
+    Query the Band oracle contract for the latest ICX/USD quote.
+    """
+    # Query Band oracle contract's "get_ref_data".
+    result = call(
+        "cx087b4164a87fdfb7b714f3bafe9dfb050fd6b132",
+        "get_ref_data",
+        {"_symbol": "ICX"},  # We want the ICX/USD quote, so "_symbol" is set to "ICX".
+        height=height,
+    )
+    icx_usd_price = (
+        int(result["rate"], 16) / 1_000_000_000
+    )  # Divide by 1,000,000,000 to make it easier to read.
+
+    if height is None:
+        print(f"Current ICX/USD price is ${icx_usd_price}.")
+    else:
+        print(f"ICX/USD price at block #{height} was ${icx_usd_price}.")
+    return icx_usd_price
+
+
 def main():
     # Make a smart contract call to the Balanced DEX to query for pool data.
     query_balanced_pool_data()
 
-    # Make a smart contract call to the Band oracle to query for the ICX/USD price at Block #58_586_000.
+    # Make a smart contract call to the Band oracle to query for the ICX/USD price.
+    query_icx_usd_quote()  # Latest quote.
+    query_icx_usd_quote(height=58_586_000)  # Quote at Block #58,586,000
 
     # Make a smart contract call to stake ICX and delegate it to the RHIZOME validator node.
-
     return
 
 
