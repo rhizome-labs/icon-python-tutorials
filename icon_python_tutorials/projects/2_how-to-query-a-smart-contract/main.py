@@ -41,53 +41,14 @@ def call(
     Returns:
         A dictionary containing the result of the query.
     """
-    call = CallBuilder().to(to).method(method).params(params).height(height).build()
+    call = CallBuilder(
+        to=to,
+        method=method,
+        params=params,
+        height=height,
+    ).build()
     result = ICON_SERVICE.call(call)
     return result
-
-
-def send_call_transaction(
-    to: str,
-    value: int = 0,
-    method: str = None,
-    params: dict = {},
-) -> str:
-    """
-    Builds an ICX transaction to change the state of a smart contract,
-    and broadcasts it to the ICON network.
-
-    Args:
-        to: The destination ICX address.
-        value: The amount of ICX to send expressed in loop (1 ICX = 1 * 10**18 loop)
-
-    Returns:
-        A transaction hash.
-    """
-    # Build a transaction object.
-    transaction = (
-        CallTransactionBuilder()
-        .from_(WALLET.get_address())
-        .to(to)
-        .value(value)
-        .nid(NETWORK_ID)
-        .nonce(_generate_nonce())
-        .method(method)
-        .params(params)
-        .build()
-    )
-    # Sign the transaction with the provided wallet, and set step limit.
-    signed_transaction = SignedTransaction(transaction, WALLET, 50_000_000)
-    # Broadcast the transaction to the ICON network.
-    tx_hash = ICON_SERVICE.send_transaction(signed_transaction)
-    return tx_hash
-
-
-def _generate_nonce() -> int:
-    """
-    Generates a four digit random number.
-    """
-    nonce = int("".join([str(randint(0, 9)) for i in range(4)]))
-    return nonce
 
 
 def query_balanced_pool_data():
@@ -218,7 +179,7 @@ def query_icx_usd_quote(height: int = None):
 
 def main():
     # Make a smart contract call to the Balanced DEX to query for pool data.
-    query_balanced_pool_data()
+    # query_balanced_pool_data()
 
     # Make a smart contract call to the Band oracle to query for the ICX/USD price.
     query_icx_usd_quote()  # Latest quote.
